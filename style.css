@@ -77,8 +77,12 @@ h3 { font-size: 1.25rem; }
 .brand-name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-hi); }
 
 /* ---------- Header ---------- */
-.header { position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header-h); display: flex; align-items: center; transition: background .3s var(--ease), box-shadow .3s var(--ease); }
-.header.scrolled { background: rgba(13, 11, 8, .86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
+/* The frosted blur sits on a layer behind the header, not on the header itself:
+   a backdrop-filter on the header would trap the full-screen phone menu inside the 72px bar. */
+.header { position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header-h); display: flex; align-items: center; transition: box-shadow .3s var(--ease); }
+.header::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; transition: background .3s var(--ease); }
+.header.scrolled { box-shadow: 0 1px 0 var(--line); }
+.header.scrolled::before { background: rgba(13, 11, 8, .86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; }
 .nav { display: flex; align-items: center; gap: 2rem; }
 .nav a:not(.btn) { text-decoration: none; font-weight: 500; font-size: .95rem; color: var(--cream); transition: color .25s; }
