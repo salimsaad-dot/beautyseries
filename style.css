@@ -424,3 +424,11 @@ body.bag-open .footer { padding-bottom: calc(2rem + var(--bag-h, 78px)); }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .js .reveal { opacity: 1; translate: none; }
 }
+
+/* ---- Shop list from the owner page (js/products.js) ---- */
+.product .price { flex: 0; color: var(--gold-hi); font-weight: 700; font-size: 1rem; margin-top: .5rem; }
+.product-art { position: relative; }
+.sold-tag { position: absolute; left: .7rem; top: .7rem; background: var(--bg); color: var(--cream); border: 1px solid var(--line); font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: .3rem .7rem; border-radius: 999px; }
+.product.is-sold .product-art img { filter: grayscale(.7); opacity: .6; }
+.add:disabled { opacity: .45; cursor: not-allowed; }
+.product-empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 2rem 0; }

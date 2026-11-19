@@ -134,8 +134,9 @@ document.addEventListener("DOMContentLoaded", () => {
     li.classList.toggle("in-bag", qty > 0);
 
     if (qty === 0) {
-      buy.innerHTML = `<button type="button" class="add">Add to bag</button>`;
-      buy.querySelector(".add").setAttribute("aria-label", `Add ${name} to bag`);
+      const sold = li.hasAttribute("data-soldout");
+      buy.innerHTML = `<button type="button" class="add"${sold ? " disabled" : ""}>${sold ? "Sold out" : "Add to bag"}</button>`;
+      buy.querySelector(".add").setAttribute("aria-label", sold ? `${name}, sold out` : `Add ${name} to bag`);
       return;
     }
     let out = buy.querySelector("output");
@@ -187,13 +188,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("bagSend").addEventListener("click", () => {
     const lines = ["Hello Beauty Series! I'd like to order:", ""];
-    bag.forEach((qty, name) => lines.push(`• ${qty} × ${name}`));
-    lines.push("", "Please let me know the total and how I can pick up or get it delivered. Thank you!");
+    let total = 0, allPriced = true;
+    bag.forEach((qty, name) => {
+      const li = [...document.querySelectorAll("#products .product")].find((x) => x.dataset.product === name);
+      const price = Number(li?.dataset.price) || 0;
+      if (price) total += price * qty; else allPriced = false;
+      lines.push(`• ${qty} × ${name}${price ? ` (GH₵ ${price} each)` : ""}`);
+    });
+    if (allPriced && total) lines.push("", `*Total:* GH₵ ${total}`);
+    lines.push("", allPriced ? "Please let me know how I can pick up or get it delivered. Thank you!"
+      : "Please let me know the total and how I can pick up or get it delivered. Thank you!");
     openWhatsApp(lines.join("\n"));
   });
 
   document.querySelectorAll(".product").forEach((li) => {
     li.querySelector(".add").setAttribute("aria-label", `Add ${li.dataset.product} to bag`);
+  });
+  // The product list can be refreshed from the owner's list (js/products.js): drop bag items that
+  // no longer exist or sold out, then redraw the buttons.
+  document.addEventListener("products:ready", () => {
+    const items = [...document.querySelectorAll("#products .product")];
+    for (const name of [...bag.keys()]) {
+      const li = items.find((x) => x.dataset.product === name);
+      if (!li || li.hasAttribute("data-soldout")) bag.delete(name);
+    }
+    items.forEach(renderBuy);
+    renderBag();
   });
 
   /* ---------- Booking form → WhatsApp ---------- */
