@@ -21,16 +21,17 @@ const USE_EMULATOR = params.has("emulator") && ["localhost", "127.0.0.1"].includ
 if (USE_EMULATOR) Object.assign(FIREBASE_CONFIG, { apiKey: "demo-key", authDomain: "demo-bs.firebaseapp.com", projectId: "demo-bs", appId: "demo" });
 export const LIVE = Boolean(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
 
-// The six products from her TikTok / board. No prices: she hasn't given them (never invent prices).
+// The six products from her TikTok / board. SAMPLE prices (Salim asked, 21 Nov 2026) so visitors see how
+// prices look; the shop note says photos and prices are samples. Replace with her real prices.
 const SAMPLES = [
-  ["s-growth-oil", "Hair growth oil", "For edges, scalp and length retention.", "images/product-growth-oil.jpg"],
-  ["s-hair-food", "Hair food", "Rich daily nourishment for dry hair.", "images/product-hair-food.jpg"],
-  ["s-leave-in", "Leave-in conditioner", "Softness and moisture between washes.", "images/product-leave-in.jpg"],
-  ["s-shampoo", "Hair shampoo", "A gentle, clean wash for every texture.", "images/product-shampoo.jpg"],
-  ["s-conditioner", "Hair conditioner", "Detangles and smooths after washing.", "images/product-conditioner.jpg"],
-  ["s-hair-mask", "Hair mask", "A weekly deep-conditioning treat.", "images/product-hair-mask.jpg"],
-].map(([id, name, description, photo], i) => ({
-  id, name, description, photo, price: null, soldOut: false, hidden: false, order: i, sample: true,
+  ["s-growth-oil", "Hair growth oil", "For edges, scalp and length retention.", "images/product-growth-oil.jpg", 80],
+  ["s-hair-food", "Hair food", "Rich daily nourishment for dry hair.", "images/product-hair-food.jpg", 60],
+  ["s-leave-in", "Leave-in conditioner", "Softness and moisture between washes.", "images/product-leave-in.jpg", 90],
+  ["s-shampoo", "Hair shampoo", "A gentle, clean wash for every texture.", "images/product-shampoo.jpg", 100],
+  ["s-conditioner", "Hair conditioner", "Detangles and smooths after washing.", "images/product-conditioner.jpg", 100],
+  ["s-hair-mask", "Hair mask", "A weekly deep-conditioning treat.", "images/product-hair-mask.jpg", 120],
+].map(([id, name, description, photo, price], i) => ({
+  id, name, description, photo, price, soldOut: false, hidden: false, order: i, sample: true,
 }));
 
 export const money = (n) => `GH₵ ${Number(n).toLocaleString("en-GH", { maximumFractionDigits: 2 })}`;
@@ -56,7 +57,7 @@ export function cleanProduct(p) {
 }
 
 /* ---------- Preview store ---------- */
-const KEY = "bs-products-preview-v1";
+const KEY = "bs-products-preview-v2";
 function readPreview() {
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(s)) return s; } catch {}
   return structuredClone(SAMPLES);
