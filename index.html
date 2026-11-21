@@ -384,9 +384,16 @@
 
   <!-- Shopping bag bar (appears once something is added) -->
   <div class="bag" id="bag" aria-hidden="true" inert>
+    <div class="bag-list" id="bagList" hidden>
+      <ul id="bagLines"></ul>
+      <p class="bag-total" id="bagTotal"></p>
+    </div>
     <div class="bag-inner">
       <div class="bag-info">
-        <span class="bag-count" id="bagCount" aria-live="polite">0 items</span>
+        <button type="button" class="bag-toggle" id="bagToggle" aria-expanded="false" aria-controls="bagList">
+          <span class="bag-count" id="bagCount" aria-live="polite">0 items</span>
+          <span class="bag-view"><span id="bagViewLabel">View bag</span> <i class="fa-solid fa-chevron-up" aria-hidden="true"></i></span>
+        </button>
         <button type="button" class="bag-clear" id="bagClear">Clear</button>
       </div>
       <button type="button" class="btn" id="bagSend"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Order on WhatsApp</button>

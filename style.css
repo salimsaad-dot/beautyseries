@@ -223,6 +223,23 @@ h3 { font-size: 1.25rem; }
 .bag-inner { width: min(1160px, 100%); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .bag-info { display: flex; align-items: baseline; gap: 1rem; }
 .bag-count { font-weight: 700; color: var(--gold-hi); display: inline-block; }
+.bag-toggle { display: flex; align-items: baseline; gap: .6rem; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; padding: .3rem 0; text-align: left; }
+.bag-view { font-size: .85rem; font-weight: 600; color: var(--gold); white-space: nowrap; }
+.bag-view i { font-size: .7rem; transition: rotate .25s var(--ease); }
+.bag-toggle[aria-expanded="true"] .bag-view i { rotate: 180deg; }
+.bag-list { width: min(1160px, 100%); margin: 0 auto .8rem; max-height: min(52vh, 420px); overflow-y: auto; border-bottom: 1px solid var(--line); padding-bottom: .6rem; }
+.bag-list ul { list-style: none; }
+.bag-line { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: .8rem; padding: .55rem 0; border-bottom: 1px solid var(--line-soft); }
+.bag-line:last-child { border-bottom: 0; }
+.bag-line img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; background: var(--card); }
+.bag-line b { display: block; font-weight: 600; color: var(--cream); font-size: .95rem; }
+.bag-line small { color: var(--muted); font-size: .8rem; }
+.bag-line .qty { gap: .5rem; padding: .2rem; }
+.bag-line .qty button { width: 32px; height: 32px; font-size: 1rem; }
+.bag-line .qty output { min-width: 1.2em; text-align: center; }
+.bag-total { margin-top: .5rem; font-size: .9rem; color: var(--muted); }
+.bag-total b { color: var(--gold-hi); }
+body.bag-list-open .wa { opacity: 0; pointer-events: none; }
 .bag-clear { background: none; border: 0; color: var(--muted); font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .bag .btn { padding: .8rem 1.3rem; }
 body.bag-open .wa { translate: 0 calc(-1 * var(--bag-h, 78px)); }
@@ -418,6 +435,7 @@ body.bag-open .footer { padding-bottom: calc(2rem + var(--bag-h, 78px)); }
   .week th, .week td { padding: .85rem .7rem; font-size: .95rem; }
   .bag .btn { padding: .75rem 1rem; font-size: .9rem; }
   .bag-info { flex-direction: column; gap: 0; }
+  .bag-toggle { flex-direction: column; gap: 0; padding: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

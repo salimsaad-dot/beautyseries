@@ -126,6 +126,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const bag = new Map(); // product name → quantity
   const bagBar = document.getElementById("bag");
   const bagCount = document.getElementById("bagCount");
+  const bagToggle = document.getElementById("bagToggle");
+  const bagList = document.getElementById("bagList");
+  const bagLines = document.getElementById("bagLines");
+  const bagTotal = document.getElementById("bagTotal");
+  const productLi = (name) => [...document.querySelectorAll("#products .product")].find((x) => x.dataset.product === name);
+  const escHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function setListOpen(open) {
+    bagList.hidden = !open;
+    bagToggle.setAttribute("aria-expanded", String(open));
+    document.getElementById("bagViewLabel").textContent = open ? "Hide" : "View bag";
+    body.classList.toggle("bag-list-open", open);
+  }
+
+  function renderLines() {
+    let sum = 0, allPriced = true;
+    bagLines.innerHTML = [...bag].map(([name, qty]) => {
+      const li = productLi(name);
+      const price = Number(li?.dataset.price) || 0;
+      if (price) sum += price * qty; else allPriced = false;
+      const img = li?.querySelector(".product-art img")?.getAttribute("src") || "";
+      const n = escHtml(name);
+      return `<li class="bag-line" data-name="${n}">
+        <img src="${escHtml(img)}" alt="" />
+        <span><b>${n}</b><small>${price ? `GH₵ ${price} each` : "Ask for price"}</small></span>
+        <div class="qty"><button type="button" data-d="-1" aria-label="One less ${n}">−</button><output>${qty}</output><button type="button" data-d="1" aria-label="One more ${n}">+</button></div>
+      </li>`;
+    }).join("");
+    bagTotal.innerHTML = allPriced && sum ? `Total: <b>GH₵ ${sum}</b>` : "Beauty Series confirms prices and the total on WhatsApp.";
+  }
 
   function renderBuy(li) {
     const name = li.dataset.product;
@@ -154,8 +184,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bagBar.classList.toggle("is-open", total > 0);
     bagBar.inert = total === 0;
     bagBar.setAttribute("aria-hidden", String(total === 0));
+    if (total === 0) setListOpen(false);
+    renderLines();
     body.classList.toggle("bag-open", total > 0);
-    body.style.setProperty("--bag-h", `${bagBar.offsetHeight}px`);
+    body.style.setProperty("--bag-h", `${bagBar.offsetHeight - (bagList.hidden ? 0 : bagList.offsetHeight)}px`);
     // Small nudge on the count when it changes while the bar is already up
     if (wasOpen && total > 0 && !reduceMotion.matches) {
       bagCount.animate([{ scale: 1 }, { scale: 1.06 }, { scale: 1 }], { duration: 200, easing: "ease-out" });
@@ -178,6 +210,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // Keep keyboard focus sensible when the button is swapped for the stepper (and back)
     if (qty === 0 && next === 1) li.querySelector(".plus").focus();
     if (next === 0) li.querySelector(".add").focus();
+  });
+
+  bagToggle.addEventListener("click", () => setListOpen(bagList.hidden));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !bagList.hidden) { setListOpen(false); bagToggle.focus(); } });
+  bagLines.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-d]");
+    if (!btn) return;
+    const name = btn.closest(".bag-line").dataset.name;
+    const next = (bag.get(name) || 0) + Number(btn.dataset.d);
+    if (next > 0) bag.set(name, Math.min(next, 20)); else bag.delete(name);
+    const li = productLi(name);
+    if (li) renderBuy(li);
+    renderBag();
+    const again = [...bagLines.querySelectorAll(".bag-line")].find((x) => x.dataset.name === name);
+    if (again) again.querySelector(`[data-d="${btn.dataset.d}"]`).focus();
+    else if (bag.size) bagToggle.focus();
   });
 
   document.getElementById("bagClear").addEventListener("click", () => {
