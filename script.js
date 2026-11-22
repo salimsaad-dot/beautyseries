@@ -1,4 +1,4 @@
-// Beauty Series · Redco, Madina
+// Beauty Series · North Legon
 const WHATSAPP_NUMBER = "233598002756"; // international format, no "+" or leading 0
 const TIMEZONE = "Africa/Accra";
 
